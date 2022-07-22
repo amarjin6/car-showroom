@@ -25,7 +25,7 @@ class Promotion(models.Model, AbstractModel):
     startDate = models.DateTimeField()
     endDate = models.DateTimeField()
     discount = models.IntegerField(default=0)
-    dealer = models.ForeignKey(ShowRoom, on_delete=models.CASCADE)
+    dealer = models.ManyToManyField(ShowRoom)
 
     def __str__(self):
         return self.discount
@@ -74,7 +74,7 @@ class Currency(models.Model, AbstractModel):
 
 class Offer(models.Model, AbstractModel):
     maxPrice = models.IntegerField(default=0)
-    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.owner
@@ -83,7 +83,7 @@ class Offer(models.Model, AbstractModel):
 class Vendor(models.Model, AbstractModel):
     foundationYear = models.DateTimeField()
     customersAmount = models.IntegerField(default=0)
-    address = models.CharField(max_length=60)
+    location = models.IntegerField(default=0)
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -95,8 +95,8 @@ class Car(models.Model, AbstractModel):
     model = models.CharField(max_length=60)
     amount = models.IntegerField(default=0)
     order = models.ForeignKey(Offer, on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    dealer = models.ForeignKey(ShowRoom, on_delete=models.CASCADE())
+    vendor = models.ManyToManyField(Vendor)
+    dealer = models.ManyToManyField(ShowRoom)
 
     def __str__(self):
         return self.order
@@ -108,7 +108,7 @@ class CarSpecifications(models.Model, AbstractModel):
     torque = models.IntegerField(default=0)
     transmission = models.TextField()
     overclocking = models.IntegerField(default=0)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    car = models.ManyToManyField(Car)
 
     def __str__(self):
         return self.car
