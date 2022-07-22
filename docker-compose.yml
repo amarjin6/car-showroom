@@ -3,13 +3,16 @@ version: "3.9"
 services:
   db:
     image: postgres:latest
+    restart: always
     volumes:
       - ./data/db:/var/lib/postgresql/data
     env_file:
       - env/db.env
   web:
-    build: .
-    command: bash -c "./showroom/manage.py migrate && exec ./showroom/manage.py runserver 0.0.0.0:8000;"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "./showroom/manage.py migrate && exec ./showroom/manage.py runserver 0.0.0.0:8000; "
     volumes:
       - .:/code
     ports:
