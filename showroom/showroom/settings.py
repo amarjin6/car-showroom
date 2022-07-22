@@ -38,8 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # local apps
+    'authentication',
+    'balance',
+    'cars',
+    'customers',
+    'offer',
+    'promotions',
+    'showrooms',
     'users',
-    # 'authentication',
+    'vendors'
     
     # third-party
     'rest_framework',
@@ -138,4 +145,4 @@ INTERNAL_IPS = [
     '0.0.0.0'
 ]
 
-# AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'authentication.User'
