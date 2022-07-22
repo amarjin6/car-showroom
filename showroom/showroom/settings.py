@@ -36,9 +36,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # local apps
+    'users',
+    # 'authentication',
+    
+    # third-party
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
     'debug_toolbar',
-    'users'
+    'django_countries',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +137,5 @@ INTERNAL_IPS = [
     '127.0.0.1',
     '0.0.0.0'
 ]
+
+# AUTH_USER_MODEL = 'authentication.User'
