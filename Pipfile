@@ -12,6 +12,7 @@ gunicorn = "*"
 djangorestframework = "*"
 django-rest-swagger = "*"
 django-debug-toolbar = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

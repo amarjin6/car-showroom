@@ -23,7 +23,7 @@ api_v1_urls = ([
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(api_v1_urls))
+    path('api/v1/', include(api_v1_urls)),
 ]
 
 if settings.DEBUG:
