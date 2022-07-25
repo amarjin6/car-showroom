@@ -1,5 +1,5 @@
 from rest_framework import routers
-from ..views import UserProfileViewSet
+from users.views import UserProfileViewSet
 from rest_framework_simplejwt.views import TokenVerifyView, TokenObtainPairView, TokenRefreshView
 from django.urls import path
 
