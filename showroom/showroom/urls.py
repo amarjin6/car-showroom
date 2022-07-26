@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='API v1')
 
 api_v1_urls = ([
                    path('users/', include('users.v1.urls')),
@@ -24,6 +27,7 @@ api_v1_urls = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_v1_urls)),
+    path('api/swagger/', schema_view),
 ]
 
 if settings.DEBUG:
