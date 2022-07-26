@@ -1,7 +1,9 @@
-from rest_framework import routers
-from users.views import UserProfileViewSet
-from rest_framework_simplejwt.views import TokenVerifyView, TokenObtainPairView, TokenRefreshView
 from django.urls import path
+
+from rest_framework import routers
+from rest_framework_simplejwt.views import TokenVerifyView, TokenObtainPairView, TokenRefreshView
+
+from users.views import UserProfileViewSet
 
 router = routers.SimpleRouter()
 router.register(r'', UserProfileViewSet)
