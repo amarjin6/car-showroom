@@ -1,9 +1,9 @@
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework.permissions import IsAuthenticated
 
 from users.models import UserProfile
 from users.serializers import UserProfileSerializer
-from rest_framework.permissions import IsAuthenticated
 from core.mixins.permissions import PermissionMixin
 from core.permissions.permissions import IsOwnerOrAdmin
 
