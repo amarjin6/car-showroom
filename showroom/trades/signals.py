@@ -6,8 +6,6 @@ from trades.models import Balance
 
 
 @receiver(post_save, sender=UserProfile)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_profile_related_attributes(sender, instance, created, **kwargs):
     if created:
         Balance.objects.create(user=instance)
-
-    instance.profile.save()
