@@ -27,7 +27,7 @@ api_v1_urls = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_v1_urls)),
-    path('', schema_view),
+    path('api/swagger/', schema_view),
 ]
 
 if settings.DEBUG:

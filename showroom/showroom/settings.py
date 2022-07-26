@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     # local apps
     'users',
-    'trades'
+    'trades',
 
     # third-party apps
     'rest_framework',

@@ -1,3 +1,5 @@
 from django.contrib import admin
+from trades.models import Balance, Currency
 
-# Register your models here.
+admin.site.register(Balance)
+admin.site.register(Currency)

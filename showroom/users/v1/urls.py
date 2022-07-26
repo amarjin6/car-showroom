@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenVerifyView, TokenObtainPairView,
 from django.urls import path
 
 router = routers.SimpleRouter()
-router.register(r'list', UserProfileViewSet)
+router.register(r'', UserProfileViewSet)
 
 urlpatterns = [
                   path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
