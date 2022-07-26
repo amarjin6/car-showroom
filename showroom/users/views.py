@@ -1,11 +1,15 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from users.models import UserProfile
 from users.serializers import UserProfileSerializer
-from users.permissions import IsAdminOrReadOnly
-from rest_framework.permissions import IsAuthenticated
+from core.mixins.permissions import ActivityViewSet
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
+class UserProfileViewSet(viewsets.ModelViewSet, ActivityViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = (IsAuthenticated,)
+    permissions_mapping = {
+        ('update', 'partial_update'): IsAuthenticated,
+    }
+
+    permission_classes = (ActivityViewSet.get_permissions(permissions_mapping),)
