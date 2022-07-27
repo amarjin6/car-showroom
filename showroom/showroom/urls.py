@@ -18,11 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework_simplejwt.views import TokenVerifyView, TokenObtainPairView, TokenRefreshView
 
 schema_view = get_swagger_view(title='API v1')
 
 api_v1_urls = ([
                    path('', include('users.v1.urls')),
+                   path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                   path('login/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+                   path('login/verify', TokenVerifyView.as_view(), name='token_verify'),
                ], 'api_v1')
 
 urlpatterns = [
