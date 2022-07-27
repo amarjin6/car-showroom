@@ -22,7 +22,7 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='API v1')
 
 api_v1_urls = ([
-                   path('users/', include('users.v1.urls')),
+                   path('', include('users.v1.urls')),
                ], 'api_v1')
 
 urlpatterns = [
