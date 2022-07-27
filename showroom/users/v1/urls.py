@@ -1,7 +1,4 @@
-from django.urls import path
-
 from rest_framework import routers
-
 
 from users.v1.views import UserProfileViewSet
 
