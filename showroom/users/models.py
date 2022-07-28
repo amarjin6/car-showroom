@@ -22,7 +22,7 @@ class UserProfile(ModelProperties):
         return name
 
 
-class UserProfileCar(models.Model):
+class UserProfileCar(ModelProperties):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='profile_user_profile_car')
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_user_profile_car')
     amount = models.IntegerField(default=0)

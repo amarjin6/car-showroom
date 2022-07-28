@@ -16,7 +16,7 @@ class Dealer(ModelProperties):
         return self.name
 
 
-class DealerCar(models.Model):
+class DealerCar(ModelProperties):
     dealer = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='dealer_dealer_car')
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_dealer_car')
     amount = models.IntegerField(default=0)
