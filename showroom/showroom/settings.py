@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # local apps
     'users',
     'trades',
+    'dealer',
+    'cars',
 
     # third-party apps
     'rest_framework',
@@ -144,9 +146,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.DjangoModelPermissions',
     ),
-
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 2,
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

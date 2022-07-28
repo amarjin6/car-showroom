@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from core.abstract_models import ModelProperties
+from cars.models import Car
 
 
 class UserProfile(ModelProperties):
@@ -9,6 +10,7 @@ class UserProfile(ModelProperties):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, )
     profile = models.CharField(max_length=1, choices=PROFILE_CHOICES, default='n', blank=False)
+    car = models.ManyToManyField(Car, blank=True)
 
     def __str__(self):
         name = self.user.username
