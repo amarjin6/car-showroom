@@ -13,6 +13,7 @@ class Dealer(ModelProperties):
     profile = models.ManyToManyField(UserProfile, blank=True)
     history = models.TextField(default='')
     car = models.ManyToManyField(Car, blank=True)
+    cars_amount = models.IntegerField(default=0)
     balance = models.OneToOneField(Balance, on_delete=models.CASCADE, null=True)
 
     def __str__(self):

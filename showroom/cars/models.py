@@ -16,7 +16,6 @@ class CarSpecification(ModelProperties):
 class Car(ModelProperties):
     price = models.IntegerField(default=0)
     model = models.CharField(max_length=60)
-    amount = models.IntegerField(default=0)
     specification = models.ManyToManyField(CarSpecification)
 
     def __str__(self):
