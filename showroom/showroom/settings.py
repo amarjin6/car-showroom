@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'trades',
     'dealer',
     'cars',
+    'orders',
 
     # third-party apps
     'rest_framework',
