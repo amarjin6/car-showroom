@@ -5,16 +5,17 @@ from core.abstract_models import ModelProperties
 
 
 class UserProfile(ModelProperties):
+    PROFILE_CHOICES = [('n', 'none'), ('c', 'customer'), ('v', 'vendor')]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, )
-    is_customer = models.BooleanField(default=False)
-    is_vendor = models.BooleanField(default=False)
+    profile = models.CharField(max_length=1, choices=PROFILE_CHOICES, default='n', blank=False)
 
     def __str__(self):
         name = self.user.username
-        if self.is_customer:
+        if self.profile == 'c':
             name = f'customer {name}'
 
-        elif self.is_vendor:
+        elif self.profile == 'v':
             name = f'vendor {name}'
 
         return name
