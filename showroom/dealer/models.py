@@ -17,8 +17,8 @@ class Dealer(ModelProperties):
 
 
 class DealerCar(models.Model):
-    dealer = models.ForeignKey(Dealer, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    dealer = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='dealer_dealercar')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_dealercar')
     amount = models.IntegerField(default=0)
 
     def __str__(self):

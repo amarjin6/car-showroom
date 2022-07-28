@@ -23,8 +23,8 @@ class UserProfile(ModelProperties):
 
 
 class UserProfileCar(models.Model):
-    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='profile_userprofilecar')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_userprofilecar')
     amount = models.IntegerField(default=0)
 
     def __str__(self):
