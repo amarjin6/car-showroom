@@ -15,7 +15,6 @@ class CarSpecification(ModelProperties):
 
 
 class Car(ModelProperties):
-    price = models.FloatField(default=.0)
     model = models.CharField(max_length=60)
     specification = models.ForeignKey(CarSpecification, on_delete=models.CASCADE, related_name='car_car_specification')
 
