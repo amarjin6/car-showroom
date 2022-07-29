@@ -7,10 +7,8 @@ from users.models import UserProfile
 
 
 class Dealer(ModelProperties):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     location = CountryField(blank_label='select country')
-    profile = models.ManyToManyField(UserProfile, blank=True)
-    history = models.TextField(default='')
 
     def __str__(self):
         return self.name
