@@ -5,7 +5,6 @@ from users.models import UserProfile
 from dealer.models import Dealer
 from cars.models import Car
 
-
 class CustomerOrder(ModelProperties):
     price = models.FloatField(default=.0)
     amount = models.IntegerField(default=0)
