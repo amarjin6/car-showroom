@@ -6,8 +6,8 @@ from dealer.models import Dealer
 
 
 class Currency(ModelProperties):
-    acronym = models.CharField(max_length=3, default='USD')
-    name = models.CharField(max_length=30, default='US Dollar')
+    acronym = models.CharField(max_length=3, default='USD', unique=True)
+    name = models.CharField(max_length=30, default='US Dollar', unique=True)
 
     def __str__(self):
         return self.acronym

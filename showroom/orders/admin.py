@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from orders.models import OrderVendorToDealer, OrderDealerToCustomer
+from orders.models import DealerOrder, CustomerOrder
 
-admin.register(OrderDealerToCustomer)
-admin.register(OrderVendorToDealer)
+admin.site.register(CustomerOrder)
+admin.site.register(DealerOrder)
+

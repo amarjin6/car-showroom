@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'dealer',
     'cars',
     'orders',
+    'promotions',
 
     # third-party apps
     'rest_framework',

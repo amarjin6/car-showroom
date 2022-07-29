@@ -3,23 +3,23 @@ from django.db import models
 from core.abstract_models import ModelProperties
 from users.models import UserProfile
 from dealer.models import Dealer
+from cars.models import Car
 
-
-class OrderDealerToCustomer(ModelProperties):
+class CustomerOrder(ModelProperties):
     price = models.FloatField(default=.0)
     amount = models.IntegerField(default=0)
-    sender = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='sender_order_dealer_to_customer')
-    receiver = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='receiver_order_dealer_to_customer')
+    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sender_customer_order')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_customer_order')
 
     def __str__(self):
-        return f'dealer {self.sender.name}, customer {self.receiver.user.username}'
+        return f'customer {self.sender.user.username} car {self.car.model}'
 
 
-class OrderVendorToDealer(ModelProperties):
+class DealerOrder(ModelProperties):
     price = models.FloatField(default=.0)
     amount = models.IntegerField(default=0)
-    sender = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sender_order_vendor_to_dealer')
-    receiver = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='receiver_order_vendor_to_dealer')
+    sender = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='sender_dealer_order')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_dealer_order')
 
     def __str__(self):
-        return f'vendor {self.sender.user.username}, dealer {self.receiver.name}'
+        return f'dealer {self.sender.name} car {self.car.model}'

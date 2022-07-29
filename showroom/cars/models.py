@@ -3,7 +3,7 @@ from core.abstract_models import ModelProperties
 
 
 class CarSpecification(ModelProperties):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     engine = models.CharField(max_length=60)
     horsepower = models.IntegerField(default=0)
     torque = models.IntegerField(default=0)
@@ -15,7 +15,6 @@ class CarSpecification(ModelProperties):
 
 
 class Car(ModelProperties):
-    price = models.IntegerField(default=0)
     model = models.CharField(max_length=60)
     specification = models.ForeignKey(CarSpecification, on_delete=models.CASCADE, related_name='car_car_specification')
 
