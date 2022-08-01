@@ -14,3 +14,9 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
     serializer_action_classes = {
         'create': ActionCustomerOrderSerializer
     }
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CustomerOrderSerializer
+        else:
+            return ActionCustomerOrderSerializer
