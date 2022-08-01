@@ -38,3 +38,13 @@ def check_customer_order(attrs: Dict) -> bool:
     price = attrs['price']
     process_customer_order(attrs)
     return True if customer_balance > price else False
+
+
+def check_dealer_order(attrs: Dict) -> bool:
+    dealer_id = attrs['dealer']
+    balances = Balance.objects.only('amount').filter(dealer_id=dealer_id).values()
+    dealer_balance = .0
+    for balance in balances:
+        dealer_balance = balance['amount']
+    price = attrs['price']
+    return True if dealer_balance > price else False
