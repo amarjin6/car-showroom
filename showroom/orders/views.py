@@ -41,6 +41,13 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
         'list': DealerOrderSerializer
     }
 
+    def create(self, request, *args, **kwargs):
+        data = {**request.data, 'dealer': UserProfile.objects.get(user_id=self.request.user).id}
+        serializer = self.get_serializer_class()
+        serializer = serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
+
     def get_serializer_class(self):
         return self.serializer_action_classes.get(self.action,
                                                   DealerOrderSerializer)

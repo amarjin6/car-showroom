@@ -32,9 +32,8 @@ def process_customer_order(validated_data: Dict):
 
 
 # client orders in showroom
-def check_order(attrs: Dict) -> tuple:
-    print(attrs.get("customer"))
-    user_profile = UserProfile.objects.get(id=attrs.get('customer').id)
+def check_order(client_name: str, attrs: Dict) -> tuple:
+    user_profile = UserProfile.objects.get(id=attrs.get(client_name).id)
     balances = user_profile.profile_balance.only('amount')
     client_balance = .0
     for balance in balances:
@@ -42,5 +41,4 @@ def check_order(attrs: Dict) -> tuple:
 
     price = attrs['price']
 
-    return client_balance > price
-
+    return client_balance >= price
