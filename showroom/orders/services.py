@@ -29,22 +29,18 @@ def process_customer_order(validated_data: Dict):
         dealer.save()
 
 
-def check_customer_order(attrs: Dict) -> bool:
-    customer_id = attrs['customer']
-    balances = Balance.objects.only('amount').filter(customer_id=customer_id).values()
-    customer_balance = .0
-    for balance in balances:
-        customer_balance = balance['amount']
-    price = attrs['price']
-    process_customer_order(attrs)
-    return True if customer_balance > price else False
+def check_order(attrs: Dict) -> bool:
+    if 'customer' in attrs:
+        client_id = attrs['customer']
+        balances = Balance.objects.only('amount').filter(customer_id=client_id).values()
 
+    else:
+        client_id = attrs['dealer']
+        balances = Balance.objects.only('amount').filter(dealer_id=client_id).values()
 
-def check_dealer_order(attrs: Dict) -> bool:
-    dealer_id = attrs['dealer']
-    balances = Balance.objects.only('amount').filter(dealer_id=dealer_id).values()
-    dealer_balance = .0
+    client_balance = .0
     for balance in balances:
-        dealer_balance = balance['amount']
+        client_balance = balance['amount']
     price = attrs['price']
-    return True if dealer_balance > price else False
+
+    return True if client_balance > price else False

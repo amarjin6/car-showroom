@@ -2,14 +2,14 @@ from rest_framework import serializers
 from typing import Dict
 
 from orders.models import CustomerOrder, DealerOrder
-from orders.services import process_customer_order, check_customer_order, check_dealer_order
+from orders.services import process_customer_order, check_order
 from users.serializers import UserProfileSerializer
 from cars.serializers import CarSerializer
 from dealer.serializers import DealerSerializer
 
 
 class CustomerOrderSerializer(serializers.ModelSerializer):
-    customer = UserProfileSerializer()
+    customer = UserProfileSerializer(read_only=True)
     car = CarSerializer()
 
     class Meta:
@@ -23,10 +23,10 @@ class ActionCustomerOrderSerializer(serializers.ModelSerializer):
         fields = ('price', 'amount', 'customer', 'car', 'created_at')
 
     def validate(self, attrs: Dict) -> Dict:
-        if check_customer_order(attrs):
+        if check_order(attrs):
             return attrs
 
-        raise serializers.ValidationError({400: "Bad Request!"})
+        raise serializers.ValidationError({'error': 'Bad data!'})
 
 
 class DealerOrderSerializer(serializers.ModelSerializer):
@@ -44,7 +44,7 @@ class ActionDealerOrderSerializer(serializers.ModelSerializer):
         fields = ('price', 'amount', 'dealer', 'car', 'created_at')
 
     def validate(self, attrs: Dict) -> Dict:
-        if check_dealer_order(attrs):
+        if check_order(attrs):
             return attrs
 
-        raise serializers.ValidationError({400: "Bad Request!"})
+        raise serializers.ValidationError({'error': 'Bad data!'})
