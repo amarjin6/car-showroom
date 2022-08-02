@@ -25,7 +25,6 @@ class ActionCustomerOrderSerializer(serializers.ModelSerializer):
     def validate(self, attrs: Dict) -> Dict:
         if check_order(attrs):
             return attrs
-
         raise serializers.ValidationError({'error': 'Bad data!'})
 
 
@@ -44,7 +43,8 @@ class ActionDealerOrderSerializer(serializers.ModelSerializer):
         fields = ('price', 'amount', 'dealer', 'car', 'created_at')
 
     def validate(self, attrs: Dict) -> Dict:
-        if check_order(attrs):
+        user_id = self.context['request'].user.id
+        if check_order(user_id, 'd', attrs):
             return attrs
 
         raise serializers.ValidationError({'error': 'Bad data!'})

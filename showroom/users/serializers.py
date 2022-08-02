@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from users.models import UserProfile
-from core.serializers import ChoiceField
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,7 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    profile = ChoiceField(choices=UserProfile.PROFILE_CHOICES)
 
     class Meta:
         model = UserProfile

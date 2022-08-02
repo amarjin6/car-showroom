@@ -1,7 +1,9 @@
 from typing import Dict
+from collections import OrderedDict
 
-from dealer.models import DealerCar
+from dealer.models import DealerCar, Dealer
 from trades.models import Balance
+from users.models import UserProfile
 
 
 def process_customer_order(validated_data: Dict):
@@ -29,18 +31,16 @@ def process_customer_order(validated_data: Dict):
         dealer.save()
 
 
-def check_order(attrs: Dict) -> bool:
-    if 'customer' in attrs:
-        client_id = attrs['customer']
-        balances = Balance.objects.only('amount').filter(customer_id=client_id).values()
-
-    else:
-        client_id = attrs['dealer']
-        balances = Balance.objects.only('amount').filter(dealer_id=client_id).values()
-
+# client orders in showroom
+def check_order(attrs: Dict) -> tuple:
+    print(attrs.get("customer"))
+    user_profile = UserProfile.objects.get(id=attrs.get('customer').id)
+    balances = user_profile.profile_balance.only('amount')
     client_balance = .0
     for balance in balances:
-        client_balance = balance['amount']
+        client_balance = balance.amount
+
     price = attrs['price']
 
-    return True if client_balance > price else False
+    return client_balance > price
+

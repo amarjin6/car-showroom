@@ -1,23 +1,39 @@
 from django.db import models
 from django.contrib.auth.models import User
+from enum import Enum
 
 from core.abstract_models import ModelProperties
 from cars.models import Car
 
 
-class UserProfile(ModelProperties):
-    PROFILE_CHOICES = [('n', 'none'), ('c', 'customer'), ('v', 'vendor')]
+class Profile(Enum):
+    NONE = 'none'
+    CUSTOMER = 'customer'
+    VENDOR = 'vendor'
+    DEALER = 'dealer'
 
+    @classmethod
+    def choices(cls):
+        return [(attr.value, attr.name) for attr in cls]
+
+    def __str__(self):
+        return self.value
+
+
+class UserProfile(ModelProperties):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, )
-    profile = models.CharField(max_length=1, choices=PROFILE_CHOICES, default='n', blank=False)
+    profile = models.CharField(max_length=8, choices=Profile.choices(), default=Profile.NONE.value, blank=False)
 
     def __str__(self):
         name = self.user.username
-        if self.profile == 'c':
+        if self.profile == Profile.CUSTOMER.value:
             name = f'customer {name}'
 
-        elif self.profile == 'v':
+        elif self.profile == Profile.VENDOR.value:
             name = f'vendor {name}'
+
+        elif self.profile == Profile.DEALER.value:
+            name = f'dealer {name}'
 
         return name
 
