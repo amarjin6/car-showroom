@@ -7,13 +7,20 @@ from users.models import UserProfile
 from orders.models import CustomerOrder, DealerOrder
 from orders.serializers import CustomerOrderSerializer, ActionCustomerOrderSerializer, DealerOrderSerializer, \
     ActionDealerOrderSerializer
+from core.permissions.permissions import IsCustomer, IsCustomerOrAdmin, IsDealer, IsDealerOrAdmin
+from core.mixins.permissions import PermissionMixin
 
 
-class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin,
+class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
                            viewsets.GenericViewSet):
     queryset = CustomerOrder.objects.all()
     serializer_class = CustomerOrderSerializer
-    permission_classes = (IsAuthenticated,)
+
+    permission_classes = [IsCustomerOrAdmin]
+    permissions_mapping = {
+        'create': IsCustomer,
+    }
+
     serializer_action_classes = {
         'create': ActionCustomerOrderSerializer,
         'list': CustomerOrderSerializer
@@ -24,6 +31,7 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
         return Response(serializer.data)
 
     def get_serializer_class(self):
@@ -35,7 +43,12 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
                          viewsets.GenericViewSet):
     queryset = DealerOrder.objects.all()
     serializer_class = DealerOrderSerializer
-    permission_classes = (IsAuthenticated,)
+
+    permission_classes = [IsDealerOrAdmin]
+    permissions_mapping = {
+        'create': IsDealer
+    }
+
     serializer_action_classes = {
         'create': ActionDealerOrderSerializer,
         'list': DealerOrderSerializer
@@ -46,6 +59,7 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
         return Response(serializer.data)
 
     def get_serializer_class(self):

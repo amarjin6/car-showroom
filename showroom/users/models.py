@@ -1,23 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from enum import Enum
 
 from core.abstract_models import ModelProperties
 from cars.models import Car
-
-
-class Profile(Enum):
-    NONE = 'none'
-    CUSTOMER = 'customer'
-    VENDOR = 'vendor'
-    DEALER = 'dealer'
-
-    @classmethod
-    def choices(cls):
-        return [(attr.value, attr.name) for attr in cls]
-
-    def __str__(self):
-        return self.value
+from core.enums import Profile
 
 
 class UserProfile(ModelProperties):
