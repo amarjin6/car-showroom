@@ -3,14 +3,14 @@ from django.db import models
 from core.abstract_models import ModelProperties
 from users.models import UserProfile
 from dealer.models import Dealer
+from core.enums import Acronym
 
 
 class Currency(ModelProperties):
-    acronym = models.CharField(max_length=3, default='USD', unique=True)
-    name = models.CharField(max_length=30, default='US Dollar', unique=True)
+    name = models.CharField(max_length=3, choices=Acronym.choices(), default=Acronym.USD)
 
     def __str__(self):
-        return self.acronym
+        return self.name
 
 
 class Balance(ModelProperties):

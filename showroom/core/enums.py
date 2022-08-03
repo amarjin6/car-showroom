@@ -13,3 +13,23 @@ class Profile(Enum):
 
     def __str__(self):
         return self.value
+
+
+class Acronym(Enum):
+    USD = 'US Dollar'
+    EUR = 'Euro'
+    RUB = 'Ruble'
+    PLN = 'Zloty'
+    UAH = 'Hryvnia'
+    JPY = 'Yen'
+    CNY = 'Yuan'
+    TRY = 'Turkish Lira'
+    ITL = 'Lira'
+    BTC = 'Bitcoin'
+
+    @classmethod
+    def choices(cls):
+        return [(attr.name, attr.value) for attr in cls]
+
+    def __str__(self):
+        return self.value

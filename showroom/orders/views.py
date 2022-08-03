@@ -1,14 +1,14 @@
 from rest_framework import viewsets
 from rest_framework import mixins
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import UserProfile
 from orders.models import CustomerOrder, DealerOrder
 from orders.serializers import CustomerOrderSerializer, ActionCustomerOrderSerializer, DealerOrderSerializer, \
     ActionDealerOrderSerializer
-from core.permissions.permissions import IsCustomer, IsCustomerOrAdmin, IsDealer, IsDealerOrAdmin
+from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin, IsDealerOrAdmin
 from core.mixins.permissions import PermissionMixin
+from orders.services import process_customer_order
 
 
 class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
@@ -27,10 +27,11 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
     }
 
     def create(self, request, *args, **kwargs):
-        data = {**request.data, 'customer': UserProfile.objects.get(user_id=self.request.user).id}
+        data = {**request.data, 'customer': UserProfile.objects.get(user_id=self.request.user.id).id}
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
+        process_customer_order(data)
         self.perform_create(serializer)
         return Response(serializer.data)
 

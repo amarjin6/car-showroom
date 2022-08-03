@@ -11,9 +11,8 @@ class IsOwnerOrAdmin(BasePermission):
 
 
 class IsCustomer(BasePermission):
-    def has_permission(self, request, view, user=None):
-        if not user:
-            user = request.user
+    def has_permission(self, request, view):
+        user = request.user
         return Profile.CUSTOMER.value in user.userprofile.profile
 
 
@@ -25,9 +24,8 @@ class IsCustomerOrAdmin(BasePermission):
 
 
 class IsDealer(BasePermission):
-    def has_permission(self, request, view, user=None):
-        if not user:
-            user = request.user
+    def has_permission(self, request, view):
+        user = request.user
         return Profile.DEALER.value in user.userprofile.profile
 
 
