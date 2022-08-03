@@ -3,11 +3,18 @@ from typing import Dict
 from dealer.models import Dealer, DealerCar
 from users.models import UserProfile, UserProfileCar
 from cars.models import Car
+from core.enums import Profile
 
 
 def check_order(client_name: str, attrs: Dict) -> tuple:
-    user_profile = UserProfile.objects.get(id=attrs.get(client_name).id)
-    balances = user_profile.profile_balance.only('amount')
+    if client_name == Profile.CUSTOMER:
+        user_profile = UserProfile.objects.get(id=attrs.get(client_name).id)
+        balances = user_profile.profile_balance.only('amount')
+
+    else:
+        dealer_profile = Dealer.objects.get(id=attrs.get(client_name).id)
+        balances = dealer_profile.profile.profile_balance.only('amount')
+
     client_balance = .0
     for balance in balances:
         client_balance = balance.amount

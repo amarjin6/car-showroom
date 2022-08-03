@@ -10,7 +10,6 @@ from orders.serializers import CustomerOrderSerializer, ActionCustomerOrderSeria
 from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin, IsDealerOrAdmin
 from core.mixins.permissions import PermissionMixin
 from core.mixins.serializers import DynamicSerializerMixin
-from orders.services import process_dealer_order, process_customer_order
 
 
 class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
@@ -33,7 +32,6 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
         data = {**request.data, 'customer': UserProfile.objects.get(user_id=self.request.user.id).id}
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
-        process_customer_order(data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -57,10 +55,10 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
     }
 
     def create(self, request, *args, **kwargs):
-        data = {**request.data, 'dealer': UserProfile.objects.get(user_id=self.request.user).id}
+        data = {**request.data,
+                'dealer': UserProfile.objects.get(user_id=self.request.user.user_user_profile.profile_dealer.id).id}
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
-        process_dealer_order(data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
