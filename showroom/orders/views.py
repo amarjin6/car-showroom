@@ -8,7 +8,6 @@ from orders.serializers import CustomerOrderSerializer, ActionCustomerOrderSeria
     ActionDealerOrderSerializer
 from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin, IsDealerOrAdmin
 from core.mixins.permissions import PermissionMixin
-from orders.services import process_customer_order
 
 
 class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
@@ -31,7 +30,6 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        process_customer_order(data)
         self.perform_create(serializer)
         return Response(serializer.data)
 
