@@ -10,7 +10,7 @@ class Promotion(ModelProperties):
     name = models.CharField(max_length=30)
     description = models.TextField(default='')
     discount = models.IntegerField(default=0)
-    dealer = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='promotion_dealer')
+    dealer = models.ForeignKey(Dealer, on_delete=models.CASCADE, related_name='dealer_promotion')
 
     def __str__(self):
         return f'{self.name} {self.dealer.name} {self.discount}%'

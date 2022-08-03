@@ -7,7 +7,7 @@ from core.enums import Profile
 
 
 class UserProfile(ModelProperties):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='user_user_profile')
     profile = models.CharField(max_length=8, choices=Profile.choices(), default=Profile.NONE.value, blank=False)
 
     def __str__(self):

@@ -29,8 +29,8 @@ class ActionCustomerOrderSerializer(serializers.ModelSerializer):
 
 
 class DealerOrderSerializer(serializers.ModelSerializer):
-    dealer = DealerSerializer()
-    car = CarSerializer()
+    dealer = DealerSerializer(read_only=True)
+    car = CarSerializer(read_only=True)
 
     class Meta:
         model = DealerOrder

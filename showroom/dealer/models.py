@@ -9,7 +9,7 @@ from users.models import UserProfile
 class Dealer(ModelProperties):
     name = models.CharField(max_length=30, unique=True)
     location = CountryField(blank_label='select country')
-    profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True, related_name='dealer_profile')
+    profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='profile_dealer')
 
     def __str__(self):
         return self.name
