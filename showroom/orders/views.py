@@ -24,8 +24,7 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
 
     serializer_action_classes = {
         'create': ActionCustomerOrderSerializer,
-        'list': CustomerOrderSerializer,
-        'default': CustomerOrderSerializer
+        'list': CustomerOrderSerializer
     }
 
     def create(self, request, *args, **kwargs):
@@ -50,8 +49,7 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
 
     serializer_action_classes = {
         'create': ActionDealerOrderSerializer,
-        'list': DealerOrderSerializer,
-        'default': DealerOrderSerializer
+        'list': DealerOrderSerializer
     }
 
     def create(self, request, *args, **kwargs):
