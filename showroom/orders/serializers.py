@@ -2,7 +2,7 @@ from rest_framework import serializers
 from typing import Dict
 
 from orders.models import CustomerOrder, DealerOrder
-from orders.services import process_customer_order, check_order
+from orders.services import check_order
 from users.serializers import UserProfileSerializer
 from cars.serializers import CarSerializer
 from dealer.serializers import DealerSerializer

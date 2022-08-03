@@ -28,6 +28,7 @@ class UserProfileCar(ModelProperties):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='profile_user_profile_car')
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='car_user_profile_car')
     amount = models.IntegerField(default=0)
+    price = models.FloatField(default=.0)
 
     def __str__(self):
         return f'{self.profile.user.username} {self.car.model}'
