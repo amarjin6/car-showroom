@@ -68,7 +68,7 @@ def process_dealer_order(order: Dict):
 
         final_price = vendor.price * desired_amount
 
-        dealer_balances = dealer_profile.profile_balance.only('amount')
+        dealer_balances = dealer_profile.profile.profile_balance.only('amount')
         if dealer_balances:
             dealer_balance = dealer_balances[0]
             dealer_balance.amount -= final_price
