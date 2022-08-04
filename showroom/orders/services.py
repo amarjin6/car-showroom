@@ -6,22 +6,22 @@ from cars.models import Car
 from core.enums import Profile
 
 
-def check_order(client_name: str, attrs: Dict) -> tuple:
-    if client_name == Profile.CUSTOMER:
+def check_order(client_name: str, attrs: Dict) -> bool:
+    if client_name == Profile.CUSTOMER.value:
         user_profile = UserProfile.objects.get(id=attrs.get(client_name).id)
-        balances = user_profile.profile_balance.only('amount')
+        balance = user_profile.profile_balance.only('amount').first()
 
     else:
         dealer_profile = Dealer.objects.get(id=attrs.get(client_name).id)
-        balances = dealer_profile.profile.profile_balance.only('amount')
+        balance = dealer_profile.profile.profile_balance.only('amount').first()
 
-    client_balance = .0
-    for balance in balances:
+    if balance:
         client_balance = balance.amount
+        price = attrs['price']
 
-    price = attrs['price']
+        return client_balance >= price
 
-    return client_balance >= price
+    return False
 
 
 def process_customer_order(order: Dict):
@@ -29,29 +29,23 @@ def process_customer_order(order: Dict):
     car_profile = Car.objects.get(id=order.get('car'))
     desired_amount = order['amount']
     desired_price = order['price'] / desired_amount
-    dealers = DealerCar.objects.select_related('dealer').filter(price__lte=desired_price,
-                                                                amount__gte=desired_amount,
-                                                                car__id=car_profile.id).order_by('price')
+    dealer = DealerCar.objects.select_related('dealer').filter(price__lte=desired_price,
+                                                               amount__gte=desired_amount,
+                                                               car__id=car_profile.id).order_by('price').first()
 
-    if dealers:
-        dealer = dealers[0]
-
+    if dealer:
         final_price = dealer.price * desired_amount
 
-        dealer_balances = dealer.dealer.profile.profile_balance.only('amount')
-        if dealer_balances:
-            dealer_balance = dealer_balances[0]
+        dealer_balance = dealer.dealer.profile.profile_balance.only('amount').first()
+        if dealer_balance:
             dealer_balance.amount += final_price
             dealer.amount -= desired_amount
             dealer_balance.save()
+            dealer.save()
 
-        customer_balances = customer_profile.profile_balance.only('amount')
-        if customer_balances:
-            customer_balance = customer_balances[0]
+            customer_balance = customer_profile.profile_balance.only('amount').first()
             customer_balance.amount -= final_price
             customer_balance.save()
-
-        dealer.save()
 
 
 def process_dealer_order(order: Dict):
@@ -59,26 +53,25 @@ def process_dealer_order(order: Dict):
     car_profile = Car.objects.get(id=order.get('car'))
     desired_amount = order['amount']
     desired_price = order['price'] / desired_amount
-    vendors = UserProfileCar.objects.select_related('profile').filter(price__lte=desired_price,
-                                                                      amount__gte=desired_amount,
-                                                                      car__id=car_profile.id).order_by('price')
+    vendor = UserProfileCar.objects.select_related('profile').filter(price__lte=desired_price,
+                                                                     amount__gte=desired_amount,
+                                                                     car__id=car_profile.id).order_by('price').first()
 
-    if vendors:
-        vendor = vendors[0]
-
+    if vendor:
         final_price = vendor.price * desired_amount
 
-        dealer_balances = dealer_profile.profile.profile_balance.only('amount')
-        if dealer_balances:
-            dealer_balance = dealer_balances[0]
-            dealer_balance.amount -= final_price
-            dealer_balance.save()
+        dealer_balance = dealer_profile.profile.profile_balance.only('amount').first()
+        dealer_balance.amount -= final_price
+        dealer_balance.save()
 
-        dealer_cars = dealer_profile.dealer_dealer_car.only('amount')
-        if dealer_cars:
-            dealer_car = dealer_cars[0]
+        dealer_car = dealer_profile.dealer_dealer_car.only('amount').filter(car_id=car_profile.id).first()
+        if dealer_car:
             dealer_car.amount += desired_amount
             dealer_car.save()
+
+        else:
+            new_car = DealerCar(dealer=dealer_profile, car=car_profile, amount=desired_amount, price=vendor.price * 1.1)
+            new_car.save()
 
         vendor.amount -= desired_amount
         vendor.save()
