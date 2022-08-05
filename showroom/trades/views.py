@@ -10,7 +10,7 @@ from trades.filters import BalanceFilter
 
 class BalanceViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Balance.objects.all()
-    serializer_class = UserProfileSerializer
+    serializer_class = BalanceSerializer
     permission_classes = (IsAdminUser,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = BalanceFilter
