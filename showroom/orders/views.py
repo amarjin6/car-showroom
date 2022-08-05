@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
 
 from users.models import UserProfile
 from orders.models import CustomerOrder, DealerOrder
@@ -11,6 +12,7 @@ from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin
 from core.mixins.permissions import PermissionMixin
 from core.mixins.serializers import DynamicSerializerMixin
 from orders.services import process_dealer_order, process_customer_order
+from orders.filters import OrderFilter
 
 
 class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
@@ -27,6 +29,9 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
         'create': ActionCustomerOrderSerializer,
         'list': CustomerOrderSerializer
     }
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = OrderFilter
 
     def create(self, request, *args, **kwargs):
         data = {**request.data, 'customer': UserProfile.objects.get(user_id=self.request.user.id).id}
@@ -53,6 +58,9 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
         'create': ActionDealerOrderSerializer,
         'list': DealerOrderSerializer
     }
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = OrderFilter
 
     def create(self, request, *args, **kwargs):
         data = {**request.data,
