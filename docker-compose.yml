@@ -14,7 +14,7 @@ services:
   django:
     build: .
     container_name: django
-    command: bash -c "./showroom/manage.py migrate && exec ./showroom/manage.py runserver 0.0.0.0:8000;"
+    command: bash -c "./manage.py migrate && exec ./manage.py runserver 0.0.0.0:8000;"
     networks:
       - djangonetwork
     volumes:
@@ -26,6 +26,26 @@ services:
       - env/db.env
     depends_on:
       - pgdb
+      - redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server
+    volumes:
+      - .showroom-redis:/data
+  celery:
+    build: .
+    container_name: celery
+    restart: always
+    command: celery -A showroom.showroom worker -B
+    volumes:
+      - .:/usr/src/source
+    env_file:
+      - env/redis.env
+    depends_on:
+      - pgdb
+      - redis
+      - django
 volumes:
   pg_data:
     driver: local
