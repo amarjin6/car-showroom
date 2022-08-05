@@ -37,9 +37,9 @@ services:
     build: .
     container_name: celery
     restart: always
-    command: celery -A showroom.showroom worker -B
+    command: celery -A showroom worker -l INFO
     volumes:
-      - .:/usr/src/source
+      - .:/usr/src/app
     env_file:
       - env/redis.env
     depends_on:

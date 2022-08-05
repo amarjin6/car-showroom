@@ -130,3 +130,6 @@ dmypy.json
 
 # JetBrains IDE
 .idea
+
+# Redis data
+.showroom-redis

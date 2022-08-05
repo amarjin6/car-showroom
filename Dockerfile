@@ -5,7 +5,7 @@ WORKDIR /usr/src/source
 
 COPY showroom /usr/src/source
 COPY requirements.txt /usr/src/source
-COPY env/ /usr/src/source
+COPY env/ /usr/src/source/env
 COPY Dockerfile /usr/src/source
 COPY docker-compose.yml /usr/src/source
 
