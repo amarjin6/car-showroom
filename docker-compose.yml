@@ -46,8 +46,22 @@ services:
       - pgdb
       - redis
       - django
+  flower:
+    image: mher/flower
+    container_name: flower
+    command: celery flower
+    env_file:
+      - env/redis.env
+    depends_on:
+      - celery
+    ports:
+      - "5555:5555"
+    volumes:
+      - flower_data:/data
 volumes:
   pg_data:
+    driver: local
+  flower_data:
     driver: local
 networks:
   djangonetwork:
