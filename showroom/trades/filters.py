@@ -4,10 +4,11 @@ from trades.models import Balance
 
 
 class BalanceFilter(filters.FilterSet):
+    min_amount = filters.NumberFilter(field_name='amount', lookup_expr='gte')
+    max_amount = filters.NumberFilter(field_name='amount', lookup_expr='lte')
     is_active = filters.BooleanFilter(field_name='is_active')
-    created_at_from = filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
-    created_at_to = filters.DateTimeFilter(field_name='created_at', lookup_expr='lte')
+    created_at = filters.DateTimeFromToRangeFilter(field_name='created_at')
 
     class Meta:
         model = Balance
-        fields = ['is_active', 'created_at_from', 'created_at_to']
+        fields = ['min_amount', 'max_amount', 'is_active', 'created_at']

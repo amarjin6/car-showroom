@@ -4,7 +4,7 @@ from promotions.models import Promotion
 from dealer.serializers import DealerSerializer
 
 
-class CarSpecificationSerializer(serializers.ModelSerializer):
+class PromotionSerializer(serializers.ModelSerializer):
     dealer = DealerSerializer()
 
     class Meta:

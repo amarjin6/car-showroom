@@ -12,7 +12,7 @@ from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin
 from core.mixins.permissions import PermissionMixin
 from core.mixins.serializers import DynamicSerializerMixin
 from orders.services import process_dealer_order, process_customer_order
-from orders.filters import OrderFilter
+from orders.filters import CustomerOrderFilter, DealerOrderFilter
 
 
 class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin, PermissionMixin,
@@ -31,7 +31,7 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
     }
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = OrderFilter
+    filterset_class = CustomerOrderFilter
 
     def create(self, request, *args, **kwargs):
         data = {**request.data, 'customer': UserProfile.objects.get(user_id=self.request.user.id).id}
@@ -60,7 +60,7 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
     }
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = OrderFilter
+    filterset_class = DealerOrderFilter
 
     def create(self, request, *args, **kwargs):
         data = {**request.data,
