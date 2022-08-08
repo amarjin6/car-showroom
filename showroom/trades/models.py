@@ -2,7 +2,6 @@ from django.db import models
 
 from core.abstract_models import ModelProperties
 from users.models import UserProfile
-from dealer.models import Dealer
 from core.enums import Acronym
 
 
