@@ -5,43 +5,35 @@ services:
     image: postgres
     container_name: pgdb
     restart: always
-    networks:
-      - djangonetwork
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     env_file:
       - env/db.env
   django:
     build: .
     container_name: django
     command: bash -c "./manage.py migrate && exec ./manage.py runserver 0.0.0.0:8000;"
-    networks:
-      - djangonetwork
     volumes:
-      - .:/usr/src/app
+      - .:/usr/src/showroom
     ports:
       - "8000:8000"
     env_file:
       - env/.env
       - env/db.env
-    restart: on-failure
     depends_on:
       - pgdb
       - redis
-      - celery
   redis:
     image: redis:alpine
     container_name: redis
     command: redis-server
-    volumes:
-      - .showroom-redis:/data
   celery:
     build: .
     container_name: celery
     restart: always
     command: celery -A showroom worker -l INFO
     volumes:
-      - .:/usr/src/app
+      - .:/usr/src/showroom
     env_file:
       - env/redis.env
       - env/db.env
@@ -49,6 +41,7 @@ services:
     depends_on:
       - pgdb
       - redis
+      - django
   flower:
     image: mher/flower
     container_name: flower
@@ -62,10 +55,5 @@ services:
     volumes:
       - flower_data:/data
 volumes:
-  pg_data:
-    driver: local
+  pgdata:
   flower_data:
-    driver: local
-networks:
-  djangonetwork:
-    driver: bridge
