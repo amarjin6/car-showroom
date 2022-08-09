@@ -1,5 +1,7 @@
 from showroom.celery import app
+from orders.services import process_dealer_order, process_customer_order
 
 
-def add(x, y):
-    return x + y
+@app.task
+def buy_car():
+    return True if process_customer_order() else False

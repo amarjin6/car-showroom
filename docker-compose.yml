@@ -24,6 +24,7 @@ services:
     env_file:
       - env/.env
       - env/db.env
+    restart: on-failure
     depends_on:
       - pgdb
       - redis

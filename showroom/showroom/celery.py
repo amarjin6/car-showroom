@@ -11,6 +11,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'buy-car-every-10-minute': {
         'task': 'orders.tasks.buy_car',
-        'schedule': crontab(minute='*/10'),  # minute=0, hour='*/1' # add bool field to return
+        'schedule': crontab(minute='*/1'),  # minute=0, hour='*/1' # add bool field to return
     },
 }
