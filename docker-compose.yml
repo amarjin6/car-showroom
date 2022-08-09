@@ -28,6 +28,7 @@ services:
     depends_on:
       - pgdb
       - redis
+      - celery
   redis:
     image: redis:alpine
     container_name: redis
@@ -43,10 +44,11 @@ services:
       - .:/usr/src/app
     env_file:
       - env/redis.env
+      - env/db.env
+      - env/.env
     depends_on:
       - pgdb
       - redis
-      - django
   flower:
     image: mher/flower
     container_name: flower
