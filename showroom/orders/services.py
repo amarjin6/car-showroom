@@ -1,8 +1,10 @@
 from typing import Dict
+from datetime import datetime
 
 from dealer.models import Dealer, DealerCar
 from users.models import UserProfile, UserProfileCar
 from orders.models import CustomerOrder, DealerOrder
+from promotions.models import Promotion
 from core.enums import Profile
 
 
@@ -32,12 +34,25 @@ def process_customer_order() -> bool:
             car_profile = order.car
             desired_amount = order.amount
             desired_price = order.price / desired_amount
-            dealer = DealerCar.objects.select_related('dealer').filter(price__lte=desired_price,
-                                                                       amount__gte=desired_amount,
-                                                                       car__id=car_profile.id).order_by('price').first()
+            dealers = DealerCar.objects.select_related('dealer').filter(price__lte=desired_price,
+                                                                        amount__gte=desired_amount,
+                                                                        car__id=car_profile.id).order_by('price')
+            if dealers:
+                dealer = dealers[0]
+                min_price = dealer.price
+                for potential_dealer in dealers:
+                    promotion = potential_dealer.dealer_promotion.filter(car=car_profile).order_by('discount')
+                    if promotion:
+                        start_date = promotion.start_date
+                        end_date = promotion.end_date
+                        discount = promotion.discount
+                        if end_date <= datetime.now() >= start_date:
+                            dealer_price = potential_dealer.price * (1 - (discount / 100))
+                            if dealer_price < min_price:
+                                dealer = potential_dealer
+                                min_price = dealer_price
 
-            if dealer:
-                final_price = dealer.price * desired_amount
+                final_price = min_price * desired_amount
 
                 dealer_balance = dealer.dealer.profile.profile_balance.only('amount').first()
                 if dealer_balance:
@@ -50,10 +65,12 @@ def process_customer_order() -> bool:
                     customer_balance.amount -= final_price
                     customer_balance.save()
 
-                order.is_active = False
-                order.save()
+                    order.is_active = False
+                    order.save()
 
-                return True
+                    return True
+
+                return False
 
             return False
 
