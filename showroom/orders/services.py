@@ -4,6 +4,7 @@ from datetime import datetime
 from dealer.models import Dealer, DealerCar
 from users.models import UserProfile, UserProfileCar
 from orders.models import CustomerOrder, DealerOrder
+from trades.models import Balance
 from core.enums import Profile
 
 
@@ -69,16 +70,20 @@ def process_customer_order() -> bool:
                     dealer.save()
                     dealer_balance.save()
 
-                    customer_balance = customer_profile.profile_balance.only('amount').first()
-                    customer_balance.amount -= final_price
-                    customer_balance.save()
+                else:
+                    new_balance = Balance(amount=final_price,
+                                          currency=customer_profile.profile_balance.only('currency').first().currency,
+                                          profile=dealer.dealer.profile)
+                    new_balance.save()
 
-                    order.is_active = False
-                    order.save()
+                customer_balance = customer_profile.profile_balance.only('amount').first()
+                customer_balance.amount -= final_price
+                customer_balance.save()
 
-                    return True
+                order.is_active = False
+                order.save()
 
-                return False
+                return True
 
             return False
 
