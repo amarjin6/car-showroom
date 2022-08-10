@@ -4,7 +4,6 @@ from datetime import datetime
 from dealer.models import Dealer, DealerCar
 from users.models import UserProfile, UserProfileCar
 from orders.models import CustomerOrder, DealerOrder
-from promotions.models import Promotion
 from core.enums import Profile
 
 
@@ -34,19 +33,27 @@ def process_customer_order() -> bool:
             car_profile = order.car
             desired_amount = order.amount
             desired_price = order.price / desired_amount
-            dealers = DealerCar.objects.select_related('dealer').filter(price__lte=desired_price,
-                                                                        amount__gte=desired_amount,
-                                                                        car__id=car_profile.id).order_by('price')
-            if dealers:
-                dealer = dealers[0]
+            dealers = DealerCar.objects.select_related('dealer').filter(amount__gte=desired_amount,
+                                                                        car=car_profile).order_by('price')
+
+            first_dealer = None
+            for suitable_dealer in dealers:
+                if suitable_dealer.price <= desired_price:
+                    first_dealer = suitable_dealer
+                    break
+
+            if dealers and first_dealer:
+                dealer = first_dealer
                 min_price = dealer.price
                 for potential_dealer in dealers:
-                    promotion = potential_dealer.dealer_promotion.filter(car=car_profile).order_by('discount')
+                    promotion = potential_dealer.dealer.dealer_promotion.filter(car=car_profile).order_by(
+                        'discount').first()
+
                     if promotion:
                         start_date = promotion.start_date
                         end_date = promotion.end_date
                         discount = promotion.discount
-                        if end_date <= datetime.now() >= start_date:
+                        if start_date <= datetime.now() <= end_date:
                             dealer_price = potential_dealer.price * (1 - (discount / 100))
                             if dealer_price < min_price:
                                 dealer = potential_dealer
