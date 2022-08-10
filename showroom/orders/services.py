@@ -66,8 +66,6 @@ def process_customer_order() -> bool:
                 dealer_balance = dealer.dealer.profile.profile_balance.only('amount').first()
                 if dealer_balance:
                     dealer_balance.amount += final_price
-                    dealer.amount -= desired_amount
-                    dealer.save()
                     dealer_balance.save()
 
                 else:
@@ -75,6 +73,9 @@ def process_customer_order() -> bool:
                                           currency=customer_profile.profile_balance.only('currency').first().currency,
                                           profile=dealer.dealer.profile)
                     new_balance.save()
+
+                dealer.amount -= desired_amount
+                dealer.save()
 
                 customer_balance = customer_profile.profile_balance.only('amount').first()
                 customer_balance.amount -= final_price
@@ -112,7 +113,7 @@ def process_dealer_order() -> bool:
                 min_price = vendor.price
 
                 for potential_vendor in vendors:
-                    promotion = potential_vendor.vendor_promotion.filter(car=car_profile).order_by(
+                    promotion = potential_vendor.profile.vendor_promotion.filter(car=car_profile).order_by(
                         'discount').first()
 
                     if promotion:
@@ -137,7 +138,7 @@ def process_dealer_order() -> bool:
 
                 else:
                     new_car = DealerCar(dealer=dealer_profile, car=car_profile, amount=desired_amount,
-                                        price=vendor.price * 1.1)
+                                        price=min_price * 1.1)
                     new_car.save()
 
                 vendor.amount -= desired_amount
