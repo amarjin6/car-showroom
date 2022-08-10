@@ -45,6 +45,7 @@ def process_customer_order() -> bool:
             if dealers and first_dealer:
                 dealer = first_dealer
                 min_price = dealer.price
+
                 for potential_dealer in dealers:
                     promotion = potential_dealer.dealer.dealer_promotion.filter(car=car_profile).order_by(
                         'discount').first()
@@ -92,14 +93,34 @@ def process_dealer_order() -> bool:
             car_profile = order.car
             desired_amount = order.amount
             desired_price = order.price / desired_amount
-            vendor = UserProfileCar.objects.select_related('profile').filter(price__lte=desired_price,
-                                                                             amount__gte=desired_amount,
-                                                                             car__id=car_profile.id).order_by(
-                'price').first()
+            vendors = UserProfileCar.objects.select_related('profile').filter(amount__gte=desired_amount,
+                                                                              car__id=car_profile.id).order_by('price')
 
-            if vendor:
-                final_price = vendor.price * desired_amount
+            first_vendor = None
+            for suitable_vendor in vendors:
+                if suitable_vendor.price <= desired_price:
+                    first_vendor = suitable_vendor
+                    break
 
+            if vendors and first_vendor:
+                vendor = first_vendor
+                min_price = vendor.price
+
+                for potential_vendor in vendors:
+                    promotion = potential_vendor.vendor_promotion.filter(car=car_profile).order_by(
+                        'discount').first()
+
+                    if promotion:
+                        start_date = promotion.start_date
+                        end_date = promotion.end_date
+                        discount = promotion.discount
+                        if start_date <= datetime.now() <= end_date:
+                            vendor_price = potential_vendor.price * (1 - (discount / 100))
+                            if vendor_price < min_price:
+                                vendor = potential_vendor
+                                min_price = vendor_price
+
+                final_price = min_price * desired_amount
                 dealer_balance = dealer_profile.profile.profile_balance.only('amount').first()
                 dealer_balance.amount -= final_price
                 dealer_balance.save()

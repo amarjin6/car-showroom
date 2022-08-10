@@ -9,8 +9,12 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'buy-car-every-10-minute': {
-        'task': 'orders.tasks.buy_car',
-        'schedule': crontab(minute='*/1'),  # minute=0, hour='*/1' # add bool field to return
+    'buy-car-from-dealer-every-10-minute': {
+        'task': 'orders.tasks.buy_car_from_dealer',
+        'schedule': crontab(minute='*/10'),
+    },
+    'buy-car-from-vendor-every-1-hour': {
+        'task': 'orders.tasks.buy_car_from_vendor',
+        'schedule': crontab(hour='*/1'),
     },
 }
