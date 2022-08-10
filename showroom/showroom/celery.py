@@ -1,5 +1,4 @@
 import os
-
 from celery import Celery
 from celery.schedules import crontab
 
@@ -9,12 +8,12 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'buy-car-from-dealer-every-10-minute': {
-        'task': 'orders.tasks.buy_car_from_dealer',
+    'process-customer-order-every-10-minute': {
+        'task': 'orders.services.process_customer_order',
         'schedule': crontab(minute='*/10'),
     },
-    'buy-car-from-vendor-every-1-hour': {
-        'task': 'orders.tasks.buy_car_from_vendor',
+    'process-dealer-order-every-1-hour': {
+        'task': 'orders.services.process_dealer_order',
         'schedule': crontab(hour='*/1'),
     },
 }

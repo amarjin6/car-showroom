@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, Tuple
 from datetime import datetime
+from celery import shared_task
 
 from dealer.models import Dealer, DealerCar
 from users.models import UserProfile, UserProfileCar
@@ -26,6 +27,41 @@ def check_order(client_name: str, attrs: Dict) -> bool:
     return False
 
 
+def find_best_deal(clients, desired_price, car, profile) -> Tuple:
+    first_client = None
+    for suitable_client in clients:
+        if suitable_client.price <= desired_price:
+            first_client = suitable_client
+            break
+
+    if first_client:
+        min_price = first_client.price
+
+        for potential_client in clients:
+            if profile == Profile.DEALER.value:
+                promotion = potential_client.dealer.dealer_promotion.filter(car=car).order_by(
+                    'discount').first()
+
+            else:
+                promotion = potential_client.profile.vendor_promotion.filter(car=car).order_by(
+                    'discount').first()
+
+            if promotion:
+                start_date = promotion.start_date
+                end_date = promotion.end_date
+                discount = promotion.discount
+                if start_date <= datetime.now() <= end_date:
+                    client_price = potential_client.price * (1 - (discount / 100))
+                    if client_price < min_price:
+                        first_client = potential_client
+                        min_price = client_price
+
+        return first_client, min_price
+
+    return None, 0
+
+
+@shared_task
 def process_customer_order() -> bool:
     orders = CustomerOrder.objects.all()
     for order in orders:
@@ -37,30 +73,8 @@ def process_customer_order() -> bool:
             dealers = DealerCar.objects.select_related('dealer').filter(amount__gte=desired_amount,
                                                                         car=car_profile).order_by('price')
 
-            first_dealer = None
-            for suitable_dealer in dealers:
-                if suitable_dealer.price <= desired_price:
-                    first_dealer = suitable_dealer
-                    break
-
-            if dealers and first_dealer:
-                dealer = first_dealer
-                min_price = dealer.price
-
-                for potential_dealer in dealers:
-                    promotion = potential_dealer.dealer.dealer_promotion.filter(car=car_profile).order_by(
-                        'discount').first()
-
-                    if promotion:
-                        start_date = promotion.start_date
-                        end_date = promotion.end_date
-                        discount = promotion.discount
-                        if start_date <= datetime.now() <= end_date:
-                            dealer_price = potential_dealer.price * (1 - (discount / 100))
-                            if dealer_price < min_price:
-                                dealer = potential_dealer
-                                min_price = dealer_price
-
+            dealer, min_price = find_best_deal(dealers, desired_price, car_profile, Profile.DEALER.value)
+            if dealer:
                 final_price = min_price * desired_amount
 
                 dealer_balance = dealer.dealer.profile.profile_balance.only('amount').first()
@@ -88,9 +102,10 @@ def process_customer_order() -> bool:
 
             return False
 
-    return True
+        return True
 
 
+@shared_task
 def process_dealer_order() -> bool:
     orders = DealerOrder.objects.all()
     for order in orders:
@@ -102,30 +117,8 @@ def process_dealer_order() -> bool:
             vendors = UserProfileCar.objects.select_related('profile').filter(amount__gte=desired_amount,
                                                                               car__id=car_profile.id).order_by('price')
 
-            first_vendor = None
-            for suitable_vendor in vendors:
-                if suitable_vendor.price <= desired_price:
-                    first_vendor = suitable_vendor
-                    break
-
-            if vendors and first_vendor:
-                vendor = first_vendor
-                min_price = vendor.price
-
-                for potential_vendor in vendors:
-                    promotion = potential_vendor.profile.vendor_promotion.filter(car=car_profile).order_by(
-                        'discount').first()
-
-                    if promotion:
-                        start_date = promotion.start_date
-                        end_date = promotion.end_date
-                        discount = promotion.discount
-                        if start_date <= datetime.now() <= end_date:
-                            vendor_price = potential_vendor.price * (1 - (discount / 100))
-                            if vendor_price < min_price:
-                                vendor = potential_vendor
-                                min_price = vendor_price
-
+            vendor, min_price = find_best_deal(vendors, desired_price, car_profile, Profile.VENDOR.value)
+            if vendor:
                 final_price = min_price * desired_amount
                 dealer_balance = dealer_profile.profile.profile_balance.only('amount').first()
                 dealer_balance.amount -= final_price
