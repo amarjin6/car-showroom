@@ -1,4 +1,5 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
+from django.db.models import QuerySet
 from datetime import datetime
 from celery import shared_task
 
@@ -27,7 +28,8 @@ def check_order(client_name: str, attrs: Dict) -> bool:
     return False
 
 
-def find_best_deal(clients, desired_price, car, profile) -> Tuple:
+def find_best_deal(clients: QuerySet, desired_price: float, car: QuerySet, profile: str) -> Tuple[
+                   Union[None, QuerySet], float]:
     first_client = None
     for suitable_client in clients:
         if suitable_client.price <= desired_price:
