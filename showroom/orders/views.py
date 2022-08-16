@@ -11,7 +11,6 @@ from orders.serializers import CustomerOrderSerializer, ActionCustomerOrderSeria
 from core.permissions.permissions import IsCustomer, IsDealer, IsCustomerOrAdmin, IsDealerOrAdmin
 from core.mixins.permissions import PermissionMixin
 from core.mixins.serializers import DynamicSerializerMixin
-from orders.services import process_dealer_order, process_customer_order
 from orders.filters import CustomerOrderFilter, DealerOrderFilter
 
 
@@ -38,7 +37,6 @@ class CustomerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, m
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        process_customer_order(data)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -68,7 +66,6 @@ class DealerOrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mix
         serializer = self.get_serializer_class()
         serializer = serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        process_dealer_order(data)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
