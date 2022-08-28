@@ -99,3 +99,9 @@ Celery runs a script once an hour, which checks the profitability of cooperation
     api/v1/cars
 
 ## 🥽 **Preview** 🥽
+
+![flower](https://user-images.githubusercontent.com/86531927/187090651-cc226ccd-062c-4874-891f-5fc0d30ad73b.png)
+
+![drf](https://user-images.githubusercontent.com/86531927/187090657-d6d1f5a9-c036-4d0e-ab80-366f53f96c02.png)
+
+![swagger](https://user-images.githubusercontent.com/86531927/187090668-0a0f7e0d-4027-41ec-b642-d756a99816d8.png)
